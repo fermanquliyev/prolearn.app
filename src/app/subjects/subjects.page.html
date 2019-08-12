@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title *ngIf="subject">{{subject.mainSubject.name}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-row>
+    <ion-col size-xs="12" offset-xs="0" size="6" offset="3">
+      <ion-list *ngIf="subject">
+        <ion-item detail *ngFor="let item of subject.subjects" [routerLink]="['/','content', item.id]">
+          <ion-label>
+            {{item.name}}
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-col>
+  </ion-row>
+</ion-content>

@@ -33,7 +33,8 @@
     "nswag": "^13.0.4",
     "rxjs": "~6.5.1",
     "tslib": "^1.9.0",
-    "zone.js": "~0.9.1"
+    "zone.js": "~0.9.1",
+    "bootstrap": "3.3.7"
   },
   "devDependencies": {
     "@angular-devkit/architect": "~0.801.2",

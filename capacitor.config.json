@@ -1,6 +1,6 @@
 {
   "appId": "com.irongoal.prolearn",
-  "appName": "prolearn",
+  "appName": "ProLearn",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www"

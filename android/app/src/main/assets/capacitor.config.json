@@ -1,6 +1,6 @@
 {
-  "appId": "io.ionic.starter",
-  "appName": "prolearn",
+  "appId": "com.irongoal.prolearn",
+  "appName": "ProLearn",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www"

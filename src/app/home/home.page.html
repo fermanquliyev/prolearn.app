@@ -1,20 +1,20 @@
 <ion-header>
   <ion-toolbar color="secondary">
     <ion-title>
-      Ionic Blank
+      ProLearn
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="cyan-gradient">
   <ion-row *ngIf="mainSubjects">
-    <ion-col *ngFor="let ms of mainSubjects" size-lg="3" size-md="4" size-sm="6" size-xs="12">
+    <ion-col *ngFor="let ms of mainSubjects" size-lg="3" size-md="4" size-sm="6" size-xs="6">
       <ion-card color="light">
         <ion-img [src]="baseServiceUrl+'/api/File/GetImageFromPath?imagePath='+ms.photoUrl"></ion-img>
         <div text-center  class="py-5">
-            <ion-label fill="clear" color="secondary" [routerLink]="['/','ms', ms.id]"
+            <ion-label fill="clear" color="secondary" [routerLink]="['/','subjects', ms.id]"
               routerDirection='forward'>
-              {{ms.name}}
+              <b>{{ms.name}}</b> 
             </ion-label>
           </div>
       </ion-card>

@@ -1,3 +1,3 @@
 export class AppConsts {
-    static baseServiceUrl = 'http://localhost:21021';
+    static baseServiceUrl = 'http://prolearn-001-site1.dtempurl.com';
 }

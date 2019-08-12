@@ -74,7 +74,7 @@ export class AccountServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = IsTenantAvailableOutput.fromJS(resultData200);
+            result200 = IsTenantAvailableOutput.fromJS(resultData200.result);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -130,7 +130,7 @@ export class AccountServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = RegisterOutput.fromJS(resultData200);
+            result200 = RegisterOutput.fromJS(resultData200.result);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -314,7 +314,7 @@ export class FileServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = TupleOfString.fromJS(resultData200);
+            result200 = TupleOfString.fromJS(resultData200.result);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -544,7 +544,7 @@ export class MainSubjectServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CreateEditMainSubjectDto.fromJS(resultData200);
+            result200 = CreateEditMainSubjectDto.fromJS(resultData200.result);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -716,7 +716,7 @@ export class RoleServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = RoleDto.fromJS(resultData200);
+            result200 = RoleDto.fromJS(resultData200.result);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -770,7 +770,7 @@ export class RoleServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ListResultDtoOfRoleListDto.fromJS(resultData200);
+            result200 = ListResultDtoOfRoleListDto.fromJS(resultData200.result);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -826,7 +826,7 @@ export class RoleServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = RoleDto.fromJS(resultData200);
+            result200 = RoleDto.fromJS(resultData200.result);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -927,7 +927,7 @@ export class RoleServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ListResultDtoOfPermissionDto.fromJS(resultData200);
+            result200 = ListResultDtoOfPermissionDto.fromJS(resultData200.result);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -981,7 +981,7 @@ export class RoleServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = GetRoleForEditOutput.fromJS(resultData200);
+            result200 = GetRoleForEditOutput.fromJS(resultData200.result);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -1035,7 +1035,7 @@ export class RoleServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = RoleDto.fromJS(resultData200);
+            result200 = RoleDto.fromJS(resultData200.result);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -1095,7 +1095,7 @@ export class RoleServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PagedResultDtoOfRoleDto.fromJS(resultData200);
+            result200 = PagedResultDtoOfRoleDto.fromJS(resultData200.result);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -1160,7 +1160,7 @@ export class SessionServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = GetCurrentLoginInformationsOutput.fromJS(resultData200);
+            result200 = GetCurrentLoginInformationsOutput.fromJS(resultData200.result);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -1250,7 +1250,7 @@ export class SubjectServiceProxy {
      * @param mainSubjectId (optional) 
      * @return Success
      */
-    getAllSubjectsMenu(mainSubjectId: number | null | undefined): Observable<SubjectMenuDto[]> {
+    getAllSubjectsMenu(mainSubjectId: number | null | undefined): Observable<SubjectContainer> {
         let url_ = this.baseUrl + "/api/services/app/Subject/GetAllSubjectsMenu?";
         if (mainSubjectId !== undefined)
             url_ += "mainSubjectId=" + encodeURIComponent("" + mainSubjectId) + "&"; 
@@ -1271,14 +1271,14 @@ export class SubjectServiceProxy {
                 try {
                     return this.processGetAllSubjectsMenu(<any>response_);
                 } catch (e) {
-                    return <Observable<SubjectMenuDto[]>><any>_observableThrow(e);
+                    return <Observable<SubjectContainer>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<SubjectMenuDto[]>><any>_observableThrow(response_);
+                return <Observable<SubjectContainer>><any>_observableThrow(response_);
         }));
     }
 
-    protected processGetAllSubjectsMenu(response: HttpResponseBase): Observable<SubjectMenuDto[]> {
+    protected processGetAllSubjectsMenu(response: HttpResponseBase): Observable<SubjectContainer> {
         const status = response.status;
         const responseBlob = 
             response instanceof HttpResponse ? response.body : 
@@ -1289,11 +1289,7 @@ export class SubjectServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200.result)) {
-                result200 = [] as any;
-                for (let item of resultData200.result)
-                    result200.push(SubjectMenuDto.fromJS(item));
-            }
+            result200 = SubjectContainer.fromJS(resultData200.result);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -1301,7 +1297,7 @@ export class SubjectServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<SubjectMenuDto[]>(<any>null);
+        return _observableOf<SubjectContainer>(<any>null);
     }
 
     /**
@@ -1402,7 +1398,7 @@ export class SubjectServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = SubjectContentDto.fromJS(resultData200);
+            result200 = SubjectContentDto.fromJS(resultData200.result);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -1508,7 +1504,7 @@ export class SubjectServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CreateSubjectDto.fromJS(resultData200);
+            result200 = CreateSubjectDto.fromJS(resultData200.result);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -1736,7 +1732,7 @@ export class TenantServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = TenantDto.fromJS(resultData200);
+            result200 = TenantDto.fromJS(resultData200.result);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -1840,7 +1836,7 @@ export class TenantServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = TenantDto.fromJS(resultData200);
+            result200 = TenantDto.fromJS(resultData200.result);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -1903,7 +1899,7 @@ export class TenantServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PagedResultDtoOfTenantDto.fromJS(resultData200);
+            result200 = PagedResultDtoOfTenantDto.fromJS(resultData200.result);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -1959,7 +1955,7 @@ export class TenantServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = TenantDto.fromJS(resultData200);
+            result200 = TenantDto.fromJS(resultData200.result);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -2029,7 +2025,7 @@ export class TokenAuthServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = AuthenticateResultModel.fromJS(resultData200);
+            result200 = AuthenticateResultModel.fromJS(resultData200.result);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -2140,7 +2136,7 @@ export class TokenAuthServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ExternalAuthenticateResultModel.fromJS(resultData200);
+            result200 = ExternalAuthenticateResultModel.fromJS(resultData200.result);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -2210,7 +2206,7 @@ export class UserServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = UserDto.fromJS(resultData200);
+            result200 = UserDto.fromJS(resultData200.result);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -2266,7 +2262,7 @@ export class UserServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = UserDto.fromJS(resultData200);
+            result200 = UserDto.fromJS(resultData200.result);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -2367,7 +2363,7 @@ export class UserServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ListResultDtoOfRoleDto.fromJS(resultData200);
+            result200 = ListResultDtoOfRoleDto.fromJS(resultData200.result);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -2585,7 +2581,7 @@ export class UserServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = UserDto.fromJS(resultData200);
+            result200 = UserDto.fromJS(resultData200.result);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -2648,7 +2644,7 @@ export class UserServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PagedResultDtoOfUserDto.fromJS(resultData200);
+            result200 = PagedResultDtoOfUserDto.fromJS(resultData200.result);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -4035,6 +4031,61 @@ export interface ISubjectTableDto {
     creationTime: moment.Moment | undefined;
 }
 
+export class SubjectContainer implements ISubjectContainer {
+    mainSubject: MainSubjectMenuDto | undefined;
+    subjects: SubjectMenuDto[] | undefined;
+
+    constructor(data?: ISubjectContainer) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.mainSubject = data["mainSubject"] ? MainSubjectMenuDto.fromJS(data["mainSubject"]) : <any>undefined;
+            if (Array.isArray(data["subjects"])) {
+                this.subjects = [] as any;
+                for (let item of data["subjects"])
+                    this.subjects.push(SubjectMenuDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): SubjectContainer {
+        data = typeof data === 'object' ? data : {};
+        let result = new SubjectContainer();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["mainSubject"] = this.mainSubject ? this.mainSubject.toJSON() : <any>undefined;
+        if (Array.isArray(this.subjects)) {
+            data["subjects"] = [];
+            for (let item of this.subjects)
+                data["subjects"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): SubjectContainer {
+        const json = this.toJSON();
+        let result = new SubjectContainer();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ISubjectContainer {
+    mainSubject: MainSubjectMenuDto | undefined;
+    subjects: SubjectMenuDto[] | undefined;
+}
+
 export class SubjectMenuDto implements ISubjectMenuDto {
     id: number | undefined;
     name: string | undefined;
@@ -4131,6 +4182,7 @@ export interface IMainSubjectDropdown {
 
 export class SubjectContentDto implements ISubjectContentDto {
     id: number | undefined;
+    subjectName: string | undefined;
     content: string | undefined;
 
     constructor(data?: ISubjectContentDto) {
@@ -4145,6 +4197,7 @@ export class SubjectContentDto implements ISubjectContentDto {
     init(data?: any) {
         if (data) {
             this.id = data["id"];
+            this.subjectName = data["subjectName"];
             this.content = data["content"];
         }
     }
@@ -4159,6 +4212,7 @@ export class SubjectContentDto implements ISubjectContentDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["subjectName"] = this.subjectName;
         data["content"] = this.content;
         return data; 
     }
@@ -4173,6 +4227,7 @@ export class SubjectContentDto implements ISubjectContentDto {
 
 export interface ISubjectContentDto {
     id: number | undefined;
+    subjectName: string | undefined;
     content: string | undefined;
 }
 
