@@ -1,5 +1,7 @@
 {
-  "name": "prolearn",
-  "integrations": {},
+  "name": "ProLearn",
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "angular"
 }

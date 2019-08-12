@@ -1,14 +1,23 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="secondary">
     <ion-title>
       Ionic Blank
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <div class="ion-padding">
-    The world is your oyster.
-    <p>If you get lost, the <a target="_blank" rel="noopener" href="https://ionicframework.com/docs/">docs</a> will be your guide.</p>
-  </div>
+<ion-content class="cyan-gradient">
+  <ion-row *ngIf="mainSubjects">
+    <ion-col *ngFor="let ms of mainSubjects" size-lg="3" size-md="4" size-sm="6" size-xs="12">
+      <ion-card color="light">
+        <ion-img [src]="baseServiceUrl+'/api/File/GetImageFromPath?imagePath='+ms.photoUrl"></ion-img>
+        <div text-center  class="py-5">
+            <ion-label fill="clear" color="secondary" [routerLink]="['/','ms', ms.id]"
+              routerDirection='forward'>
+              {{ms.name}}
+            </ion-label>
+          </div>
+      </ion-card>
+    </ion-col>
+  </ion-row>
 </ion-content>
