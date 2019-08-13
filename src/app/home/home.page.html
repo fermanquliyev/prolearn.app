@@ -1,5 +1,10 @@
 <ion-header>
   <ion-toolbar color="secondary">
+    <ion-buttons slot="end">
+      <ion-button (click)="exitApp()">
+        <ion-icon name="exit" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
     <ion-title>
       ProLearn
     </ion-title>
@@ -9,10 +14,10 @@
 <ion-content class="cyan-gradient">
   <ion-row *ngIf="mainSubjects">
     <ion-col *ngFor="let ms of mainSubjects" size-lg="3" size-md="4" size-sm="6" size-xs="6">
-      <ion-card color="light">
+      <ion-card color='secondary' [routerLink]="['/','subjects', ms.id]">
         <ion-img [src]="baseServiceUrl+'/api/File/GetImageFromPath?imagePath='+ms.photoUrl"></ion-img>
-        <div text-center  class="py-5">
-            <ion-label fill="clear" color="secondary" [routerLink]="['/','subjects', ms.id]"
+        <div text-center class="py-5" >
+            <ion-label 
               routerDirection='forward'>
               <b>{{ms.name}}</b> 
             </ion-label>

@@ -9,6 +9,7 @@ import { SubjectServiceProxy, SubjectContentDto } from 'src/shared/service-proxi
 })
 export class SubjectContentPage implements OnInit {
 
+  mode: 'dark'|'light' = 'light';
   subjectContent: SubjectContentDto;
   constructor(
     private activeRoute: ActivatedRoute,
@@ -26,4 +27,11 @@ export class SubjectContentPage implements OnInit {
     });
   }
 
+  toggleMode(){
+    if (this.mode === 'dark') {
+      this.mode = 'light';
+    } else {
+      this.mode = 'dark';
+    }
+  }
 }
