@@ -7,11 +7,20 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content >
+  <div *ngIf="subject && active" [ngStyle]="{'background-image': subject.mainSubject.backgroundImage}" style="height: 100%">
+  <ion-row >
+    <ion-col style="max-height: 128px;" size="6" offset="3">
+      <ion-img  style="height: 100%"  [src]="subject.mainSubject.photoUrl"></ion-img>
+    </ion-col>
+  </ion-row>
   <ion-row>
     <ion-col size-xs="12" offset-xs="0" size="6" offset="3">
-      <ion-list *ngIf="subject">
+      <ion-list>
         <ion-item detail *ngFor="let item of subject.subjects" [routerLink]="['/','content', item.id]">
+          <ion-avatar slot="start">
+              <ion-img [src]="subject.mainSubject.photoUrl"></ion-img>
+          </ion-avatar>
           <ion-label>
             {{item.name}}
           </ion-label>
@@ -19,4 +28,5 @@
       </ion-list>
     </ion-col>
   </ion-row>
+</div>
 </ion-content>

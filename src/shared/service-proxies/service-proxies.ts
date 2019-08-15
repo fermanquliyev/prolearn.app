@@ -1301,6 +1301,60 @@ export class SubjectServiceProxy {
     }
 
     /**
+     * @param subjectId (optional) 
+     * @return Success
+     */
+    getSubjectInfo(subjectId: number | null | undefined): Observable<SubjectInfoDto> {
+        let url_ = this.baseUrl + "/api/services/app/Subject/GetSubjectInfo?";
+        if (subjectId !== undefined)
+            url_ += "subjectId=" + encodeURIComponent("" + subjectId) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetSubjectInfo(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetSubjectInfo(<any>response_);
+                } catch (e) {
+                    return <Observable<SubjectInfoDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<SubjectInfoDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetSubjectInfo(response: HttpResponseBase): Observable<SubjectInfoDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SubjectInfoDto.fromJS(resultData200.result);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SubjectInfoDto>(<any>null);
+    }
+
+    /**
      * @return Success
      */
     getMainSubjectsDropdown(): Observable<MainSubjectDropdown[]> {
@@ -2942,6 +2996,7 @@ export class MainSubjectMenuDto implements IMainSubjectMenuDto {
     description: string | undefined;
     name: string | undefined;
     photoUrl: string | undefined;
+    backgroundImage: string | undefined;
     id: number | undefined;
 
     constructor(data?: IMainSubjectMenuDto) {
@@ -2958,6 +3013,7 @@ export class MainSubjectMenuDto implements IMainSubjectMenuDto {
             this.description = data["description"];
             this.name = data["name"];
             this.photoUrl = data["photoUrl"];
+            this.backgroundImage = data["backgroundImage"];
             this.id = data["id"];
         }
     }
@@ -2974,6 +3030,7 @@ export class MainSubjectMenuDto implements IMainSubjectMenuDto {
         data["description"] = this.description;
         data["name"] = this.name;
         data["photoUrl"] = this.photoUrl;
+        data["backgroundImage"] = this.backgroundImage;
         data["id"] = this.id;
         return data; 
     }
@@ -2990,6 +3047,7 @@ export interface IMainSubjectMenuDto {
     description: string | undefined;
     name: string | undefined;
     photoUrl: string | undefined;
+    backgroundImage: string | undefined;
     id: number | undefined;
 }
 
@@ -2997,8 +3055,10 @@ export class MainSubjectTableDto implements IMainSubjectTableDto {
     isActive: boolean | undefined;
     description: string | undefined;
     creationTime: moment.Moment | undefined;
+    orderNumber: number | undefined;
     name: string | undefined;
     photoUrl: string | undefined;
+    backgroundImage: string | undefined;
     id: number | undefined;
 
     constructor(data?: IMainSubjectTableDto) {
@@ -3015,8 +3075,10 @@ export class MainSubjectTableDto implements IMainSubjectTableDto {
             this.isActive = data["isActive"];
             this.description = data["description"];
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.orderNumber = data["orderNumber"];
             this.name = data["name"];
             this.photoUrl = data["photoUrl"];
+            this.backgroundImage = data["backgroundImage"];
             this.id = data["id"];
         }
     }
@@ -3033,8 +3095,10 @@ export class MainSubjectTableDto implements IMainSubjectTableDto {
         data["isActive"] = this.isActive;
         data["description"] = this.description;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["orderNumber"] = this.orderNumber;
         data["name"] = this.name;
         data["photoUrl"] = this.photoUrl;
+        data["backgroundImage"] = this.backgroundImage;
         data["id"] = this.id;
         return data; 
     }
@@ -3051,8 +3115,10 @@ export interface IMainSubjectTableDto {
     isActive: boolean | undefined;
     description: string | undefined;
     creationTime: moment.Moment | undefined;
+    orderNumber: number | undefined;
     name: string | undefined;
     photoUrl: string | undefined;
+    backgroundImage: string | undefined;
     id: number | undefined;
 }
 
@@ -3061,6 +3127,8 @@ export class CreateEditMainSubjectDto implements ICreateEditMainSubjectDto {
     name: string | undefined;
     description: string | undefined;
     isActive: boolean | undefined;
+    orderNumber: number | undefined;
+    backgroundImage: string | undefined;
     photo: ImportDbuInput | undefined;
 
     constructor(data?: ICreateEditMainSubjectDto) {
@@ -3078,6 +3146,8 @@ export class CreateEditMainSubjectDto implements ICreateEditMainSubjectDto {
             this.name = data["name"];
             this.description = data["description"];
             this.isActive = data["isActive"];
+            this.orderNumber = data["orderNumber"];
+            this.backgroundImage = data["backgroundImage"];
             this.photo = data["photo"] ? ImportDbuInput.fromJS(data["photo"]) : <any>undefined;
         }
     }
@@ -3095,6 +3165,8 @@ export class CreateEditMainSubjectDto implements ICreateEditMainSubjectDto {
         data["name"] = this.name;
         data["description"] = this.description;
         data["isActive"] = this.isActive;
+        data["orderNumber"] = this.orderNumber;
+        data["backgroundImage"] = this.backgroundImage;
         data["photo"] = this.photo ? this.photo.toJSON() : <any>undefined;
         return data; 
     }
@@ -3112,6 +3184,8 @@ export interface ICreateEditMainSubjectDto {
     name: string | undefined;
     description: string | undefined;
     isActive: boolean | undefined;
+    orderNumber: number | undefined;
+    backgroundImage: string | undefined;
     photo: ImportDbuInput | undefined;
 }
 
@@ -3981,6 +4055,8 @@ export class SubjectTableDto implements ISubjectTableDto {
     name: string | undefined;
     mainSubjectName: string | undefined;
     creationTime: moment.Moment | undefined;
+    orderNumber: number | undefined;
+    creatorUserId: number | undefined;
 
     constructor(data?: ISubjectTableDto) {
         if (data) {
@@ -3997,6 +4073,8 @@ export class SubjectTableDto implements ISubjectTableDto {
             this.name = data["name"];
             this.mainSubjectName = data["mainSubjectName"];
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.orderNumber = data["orderNumber"];
+            this.creatorUserId = data["creatorUserId"];
         }
     }
 
@@ -4013,6 +4091,8 @@ export class SubjectTableDto implements ISubjectTableDto {
         data["name"] = this.name;
         data["mainSubjectName"] = this.mainSubjectName;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["orderNumber"] = this.orderNumber;
+        data["creatorUserId"] = this.creatorUserId;
         return data; 
     }
 
@@ -4029,6 +4109,8 @@ export interface ISubjectTableDto {
     name: string | undefined;
     mainSubjectName: string | undefined;
     creationTime: moment.Moment | undefined;
+    orderNumber: number | undefined;
+    creatorUserId: number | undefined;
 }
 
 export class SubjectContainer implements ISubjectContainer {
@@ -4131,6 +4213,108 @@ export class SubjectMenuDto implements ISubjectMenuDto {
 export interface ISubjectMenuDto {
     id: number | undefined;
     name: string | undefined;
+}
+
+export class SubjectInfoDto implements ISubjectInfoDto {
+    subjectId: number | undefined;
+    subjectReadCount: number | undefined;
+    user: SubjectUser | undefined;
+
+    constructor(data?: ISubjectInfoDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.subjectId = data["subjectId"];
+            this.subjectReadCount = data["subjectReadCount"];
+            this.user = data["user"] ? SubjectUser.fromJS(data["user"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): SubjectInfoDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SubjectInfoDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["subjectId"] = this.subjectId;
+        data["subjectReadCount"] = this.subjectReadCount;
+        data["user"] = this.user ? this.user.toJSON() : <any>undefined;
+        return data; 
+    }
+
+    clone(): SubjectInfoDto {
+        const json = this.toJSON();
+        let result = new SubjectInfoDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ISubjectInfoDto {
+    subjectId: number | undefined;
+    subjectReadCount: number | undefined;
+    user: SubjectUser | undefined;
+}
+
+export class SubjectUser implements ISubjectUser {
+    name: string | undefined;
+    surname: string | undefined;
+    email: string | undefined;
+
+    constructor(data?: ISubjectUser) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.name = data["name"];
+            this.surname = data["surname"];
+            this.email = data["email"];
+        }
+    }
+
+    static fromJS(data: any): SubjectUser {
+        data = typeof data === 'object' ? data : {};
+        let result = new SubjectUser();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["surname"] = this.surname;
+        data["email"] = this.email;
+        return data; 
+    }
+
+    clone(): SubjectUser {
+        const json = this.toJSON();
+        let result = new SubjectUser();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ISubjectUser {
+    name: string | undefined;
+    surname: string | undefined;
+    email: string | undefined;
 }
 
 export class MainSubjectDropdown implements IMainSubjectDropdown {
@@ -4236,6 +4420,7 @@ export class CreateSubjectDto implements ICreateSubjectDto {
     name: string | undefined;
     content: string | undefined;
     mainSubjectId: number | undefined;
+    orderNumber: number | undefined;
 
     constructor(data?: ICreateSubjectDto) {
         if (data) {
@@ -4252,6 +4437,7 @@ export class CreateSubjectDto implements ICreateSubjectDto {
             this.name = data["name"];
             this.content = data["content"];
             this.mainSubjectId = data["mainSubjectId"];
+            this.orderNumber = data["orderNumber"];
         }
     }
 
@@ -4268,6 +4454,7 @@ export class CreateSubjectDto implements ICreateSubjectDto {
         data["name"] = this.name;
         data["content"] = this.content;
         data["mainSubjectId"] = this.mainSubjectId;
+        data["orderNumber"] = this.orderNumber;
         return data; 
     }
 
@@ -4284,6 +4471,7 @@ export interface ICreateSubjectDto {
     name: string | undefined;
     content: string | undefined;
     mainSubjectId: number | undefined;
+    orderNumber: number | undefined;
 }
 
 export class CreateTenantDto implements ICreateTenantDto {

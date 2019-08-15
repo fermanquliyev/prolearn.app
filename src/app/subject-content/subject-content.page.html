@@ -5,6 +5,9 @@
     </ion-buttons>
     <ion-title *ngIf="subjectContent">{{subjectContent.subjectName}}</ion-title>
     <ion-buttons slot="end">
+      <ion-button (click)="showInfo()">
+        <ion-icon name="information-circle" slot="icon-only"></ion-icon>
+      </ion-button>
       <ion-button (click)="toggleMode()">
         <ion-icon *ngIf="mode=='dark'" name="sunny" slot="icon-only"></ion-icon>
         <ion-icon *ngIf="mode=='light'" name="moon" slot="icon-only"></ion-icon>
@@ -22,3 +25,16 @@
     </ion-col>
   </ion-row>
 </ion-content>
+
+<!-- The Modal -->
+<div id="myModal" zooming="true" direction="xy" scrollX scrollY class="modal">
+
+  <!-- The Close Button -->
+  <span class="close" (click)="modal.style.display='none'">&times;</span>
+
+  <!-- Modal Content (The Image) -->
+  <img class="modal-content" id="img01">
+
+  <!-- Modal Caption (Image Text) -->
+  <div id="caption"></div>
+</div>

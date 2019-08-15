@@ -27,14 +27,15 @@
     "@ionic-native/splash-screen": "^5.0.0",
     "@ionic-native/status-bar": "^5.0.0",
     "@ionic/angular": "^4.7.1",
+    "bootstrap": "3.3.7",
     "core-js": "^2.5.4",
     "moment": "^2.18.1",
     "moment-timezone": "^0.5.13",
     "nswag": "^13.0.4",
+    "pinch-zoom-js": "^2.3.4",
     "rxjs": "~6.5.1",
     "tslib": "^1.9.0",
-    "zone.js": "~0.9.1",
-    "bootstrap": "3.3.7"
+    "zone.js": "~0.9.1"
   },
   "devDependencies": {
     "@angular-devkit/architect": "~0.801.2",
@@ -62,5 +63,10 @@
     "tslint": "~5.15.0",
     "typescript": "~3.4.3"
   },
-  "description": "An Ionic project"
+  "description": "An Ionic project",
+  "cordova": {
+    "plugins": {
+      "cordova-base64-to-gallery": {}
+    }
+  }
 }

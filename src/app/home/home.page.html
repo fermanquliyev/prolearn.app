@@ -12,12 +12,12 @@
 </ion-header>
 
 <ion-content class="cyan-gradient">
-  <ion-row *ngIf="mainSubjects">
+  <ion-row *ngIf="mainSubjects && active">
     <ion-col *ngFor="let ms of mainSubjects" size-lg="3" size-md="4" size-sm="6" size-xs="6">
-      <ion-card color='secondary' [routerLink]="['/','subjects', ms.id]">
-        <ion-img [src]="baseServiceUrl+'/api/File/GetImageFromPath?imagePath='+ms.photoUrl"></ion-img>
-        <div text-center class="py-5" >
-            <ion-label 
+      <ion-card  [routerLink]="['/','subjects', ms.id]">
+        <ion-img [src]="ms.photoUrl"></ion-img>
+        <div style="background-color: #0cd1e8; color: white;" text-center class="py-5" >
+            <ion-label
               routerDirection='forward'>
               <b>{{ms.name}}</b> 
             </ion-label>

@@ -24,7 +24,7 @@ export function getBaseUrl(): string {
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: API_BASE_URL, useFactory: getBaseUrl },
-    HttpClient
+    HttpClient,
   ],
   bootstrap: [AppComponent]
 })
