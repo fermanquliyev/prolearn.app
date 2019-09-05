@@ -1,3 +1,41 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+    <ion-menu slot="start"> 
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>
+              KodÖyrən
+            </ion-title>
+          </ion-toolbar>
+        </ion-header>
+  
+          <ion-content>
+            <ion-list>
+              <ion-menu-toggle>
+              <ion-item lines="none" routerLink="">
+                <ion-icon name="book" slot="start"></ion-icon>
+                <ion-label>Dərslər</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+            <ion-menu-toggle>
+              <ion-item lines="none" routerLink="/quiz">
+                <ion-icon name="help-circle" slot="start"></ion-icon>
+                <ion-label>Suallar</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+            <ion-menu-toggle>
+              <ion-item lines="none" routerLink="/feedback">
+                  <ion-icon name="star-half" slot="start"></ion-icon>
+                  <ion-label>Təklif & İrad</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+            <ion-menu-toggle>
+                <ion-item lines="none" (click)="about()">
+                    <ion-icon name="information-circle" slot="start"></ion-icon>
+                    <ion-label>Haqqında</ion-label>
+                </ion-item>
+              </ion-menu-toggle>
+            </ion-list>
+          </ion-content>
+    </ion-menu>
+  <ion-router-outlet main></ion-router-outlet>
 </ion-app>

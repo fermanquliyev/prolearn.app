@@ -51,6 +51,12 @@ export class SubjectContentPage implements OnInit {
           this.toastController.create({
             message: 'Lokal data və internet bağlantısı mövcud deyil',
             position: 'bottom',
+            buttons: [
+               {
+                text: 'Anladım',
+                role: 'cancel',
+              }
+            ]
           }).then(toast => {
             toast.present();
           });
@@ -100,7 +106,7 @@ export class SubjectContentPage implements OnInit {
     const alertMessage = `<p>Yazar: ${info.user.name} ${info.user.surname} (${info.user.email})</p>
     <p> Oxunma sayı: ${info.subjectReadCount}<p>`;
     const alert = await this.alertCtrl.create({
-      header: 'Haqqında',
+      header: this.subjectContent.subjectName,
       message: alertMessage,
       buttons: ['OK']
     });

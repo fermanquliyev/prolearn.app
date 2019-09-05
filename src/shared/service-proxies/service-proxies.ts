@@ -211,6 +211,130 @@ export class ConfigurationServiceProxy {
 @Injectable({
     providedIn: 'root'
 })
+export class FeedbackServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @param input (optional) 
+     * @return Success
+     */
+    createFeedback(input: InsertFeedbackInput | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Feedback/CreateFeedback";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateFeedback(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateFeedback(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreateFeedback(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param date (optional) 
+     * @return Success
+     */
+    getFeedbacks(date: moment.Moment | null | undefined): Observable<FeedbackDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/Feedback/GetFeedbacks?";
+        if (date !== undefined)
+            url_ += "date=" + encodeURIComponent(date ? "" + date.toJSON() : "") + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetFeedbacks(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetFeedbacks(<any>response_);
+                } catch (e) {
+                    return <Observable<FeedbackDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<FeedbackDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetFeedbacks(response: HttpResponseBase): Observable<FeedbackDto[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200.result)) {
+                result200 = [] as any;
+                for (let item of resultData200.result)
+                    result200.push(FeedbackDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<FeedbackDto[]>(<any>null);
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
 export class FileServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -337,6 +461,60 @@ export class MainSubjectServiceProxy {
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
         this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @param imagePath (optional) 
+     * @return Success
+     */
+    getBase64ImageFromFilePath(imagePath: string | null | undefined): Observable<string> {
+        let url_ = this.baseUrl + "/api/services/app/MainSubject/GetBase64ImageFromFilePath?";
+        if (imagePath !== undefined)
+            url_ += "imagePath=" + encodeURIComponent("" + imagePath) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetBase64ImageFromFilePath(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetBase64ImageFromFilePath(<any>response_);
+                } catch (e) {
+                    return <Observable<string>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetBase64ImageFromFilePath(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string>(<any>null);
     }
 
     /**
@@ -639,6 +817,399 @@ export class MainSubjectServiceProxy {
     }
 
     protected processDeleteMainSubject(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class QuizServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    getMainSubjectQuiz(): Observable<QuizDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/Quiz/GetMainSubjectQuiz";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetMainSubjectQuiz(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetMainSubjectQuiz(<any>response_);
+                } catch (e) {
+                    return <Observable<QuizDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<QuizDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetMainSubjectQuiz(response: HttpResponseBase): Observable<QuizDto[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200.result)) {
+                result200 = [] as any;
+                for (let item of resultData200.result)
+                    result200.push(QuizDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<QuizDto[]>(<any>null);
+    }
+
+    /**
+     * @param mainSubjectId (optional) 
+     * @return Success
+     */
+    getQuestions(mainSubjectId: number | null | undefined): Observable<QuestionModel[]> {
+        let url_ = this.baseUrl + "/api/services/app/Quiz/GetQuestions?";
+        if (mainSubjectId !== undefined)
+            url_ += "mainSubjectId=" + encodeURIComponent("" + mainSubjectId) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetQuestions(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetQuestions(<any>response_);
+                } catch (e) {
+                    return <Observable<QuestionModel[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<QuestionModel[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetQuestions(response: HttpResponseBase): Observable<QuestionModel[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200.result)) {
+                result200 = [] as any;
+                for (let item of resultData200.result)
+                    result200.push(QuestionModel.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<QuestionModel[]>(<any>null);
+    }
+
+    /**
+     * @param mainSubjectId (optional) 
+     * @return Success
+     */
+    getQuestionsTable(mainSubjectId: number | null | undefined): Observable<QuestionDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/Quiz/GetQuestionsTable?";
+        if (mainSubjectId !== undefined)
+            url_ += "mainSubjectId=" + encodeURIComponent("" + mainSubjectId) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetQuestionsTable(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetQuestionsTable(<any>response_);
+                } catch (e) {
+                    return <Observable<QuestionDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<QuestionDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetQuestionsTable(response: HttpResponseBase): Observable<QuestionDto[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200.result)) {
+                result200 = [] as any;
+                for (let item of resultData200.result)
+                    result200.push(QuestionDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<QuestionDto[]>(<any>null);
+    }
+
+    /**
+     * @param input (optional) 
+     * @return Success
+     */
+    createQuestion(input: CreateEditQuestionDto | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Quiz/CreateQuestion";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateQuestion(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateQuestion(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreateQuestion(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param questionId (optional) 
+     * @return Success
+     */
+    editQuestion(questionId: number | null | undefined): Observable<CreateEditQuestionDto> {
+        let url_ = this.baseUrl + "/api/services/app/Quiz/EditQuestion?";
+        if (questionId !== undefined)
+            url_ += "questionId=" + encodeURIComponent("" + questionId) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processEditQuestion(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processEditQuestion(<any>response_);
+                } catch (e) {
+                    return <Observable<CreateEditQuestionDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<CreateEditQuestionDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processEditQuestion(response: HttpResponseBase): Observable<CreateEditQuestionDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CreateEditQuestionDto.fromJS(resultData200.result);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<CreateEditQuestionDto>(<any>null);
+    }
+
+    /**
+     * @param input (optional) 
+     * @return Success
+     */
+    updateQuestion(input: CreateEditQuestionDto | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Quiz/UpdateQuestion";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateQuestion(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateQuestion(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUpdateQuestion(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param questionId (optional) 
+     * @return Success
+     */
+    deleteQuestion(questionId: number | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Quiz/DeleteQuestion?";
+        if (questionId !== undefined)
+            url_ += "questionId=" + encodeURIComponent("" + questionId) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDeleteQuestion(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDeleteQuestion(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDeleteQuestion(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob = 
             response instanceof HttpResponse ? response.body : 
@@ -1298,6 +1869,60 @@ export class SubjectServiceProxy {
             }));
         }
         return _observableOf<SubjectContainer>(<any>null);
+    }
+
+    /**
+     * @param imagePath (optional) 
+     * @return Success
+     */
+    getBase64ImageFromFilePath(imagePath: string | null | undefined): Observable<string> {
+        let url_ = this.baseUrl + "/api/services/app/Subject/GetBase64ImageFromFilePath?";
+        if (imagePath !== undefined)
+            url_ += "imagePath=" + encodeURIComponent("" + imagePath) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetBase64ImageFromFilePath(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetBase64ImageFromFilePath(<any>response_);
+                } catch (e) {
+                    return <Observable<string>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetBase64ImageFromFilePath(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string>(<any>null);
     }
 
     /**
@@ -2949,6 +3574,116 @@ export interface IChangeUiThemeInput {
     theme: string;
 }
 
+export class InsertFeedbackInput implements IInsertFeedbackInput {
+    email: string | undefined;
+    deviceInfo: string | undefined;
+    message: string | undefined;
+
+    constructor(data?: IInsertFeedbackInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.email = data["email"];
+            this.deviceInfo = data["deviceInfo"];
+            this.message = data["message"];
+        }
+    }
+
+    static fromJS(data: any): InsertFeedbackInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new InsertFeedbackInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["email"] = this.email;
+        data["deviceInfo"] = this.deviceInfo;
+        data["message"] = this.message;
+        return data; 
+    }
+
+    clone(): InsertFeedbackInput {
+        const json = this.toJSON();
+        let result = new InsertFeedbackInput();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IInsertFeedbackInput {
+    email: string | undefined;
+    deviceInfo: string | undefined;
+    message: string | undefined;
+}
+
+export class FeedbackDto implements IFeedbackDto {
+    id: number | undefined;
+    email: string | undefined;
+    deviceInfo: string | undefined;
+    message: string | undefined;
+    creationTime: moment.Moment | undefined;
+
+    constructor(data?: IFeedbackDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.email = data["email"];
+            this.deviceInfo = data["deviceInfo"];
+            this.message = data["message"];
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): FeedbackDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new FeedbackDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["email"] = this.email;
+        data["deviceInfo"] = this.deviceInfo;
+        data["message"] = this.message;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        return data; 
+    }
+
+    clone(): FeedbackDto {
+        const json = this.toJSON();
+        let result = new FeedbackDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IFeedbackDto {
+    id: number | undefined;
+    email: string | undefined;
+    deviceInfo: string | undefined;
+    message: string | undefined;
+    creationTime: moment.Moment | undefined;
+}
+
 export class TupleOfString implements ITupleOfString {
     readonly item1: string | undefined;
 
@@ -3234,6 +3969,408 @@ export class ImportDbuInput implements IImportDbuInput {
 export interface IImportDbuInput {
     content: string | undefined;
     fileExtension: string | undefined;
+}
+
+export class QuizDto implements IQuizDto {
+    mainSubjectId: number | undefined;
+    mainSubjectName: string | undefined;
+    questionCount: number | undefined;
+    photo: string | undefined;
+    backgroundImage: string | undefined;
+
+    constructor(data?: IQuizDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.mainSubjectId = data["mainSubjectId"];
+            this.mainSubjectName = data["mainSubjectName"];
+            this.questionCount = data["questionCount"];
+            this.photo = data["photo"];
+            this.backgroundImage = data["backgroundImage"];
+        }
+    }
+
+    static fromJS(data: any): QuizDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new QuizDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["mainSubjectId"] = this.mainSubjectId;
+        data["mainSubjectName"] = this.mainSubjectName;
+        data["questionCount"] = this.questionCount;
+        data["photo"] = this.photo;
+        data["backgroundImage"] = this.backgroundImage;
+        return data; 
+    }
+
+    clone(): QuizDto {
+        const json = this.toJSON();
+        let result = new QuizDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IQuizDto {
+    mainSubjectId: number | undefined;
+    mainSubjectName: string | undefined;
+    questionCount: number | undefined;
+    photo: string | undefined;
+    backgroundImage: string | undefined;
+}
+
+export class QuestionModel implements IQuestionModel {
+    id: number | undefined;
+    imageBase64: string | undefined;
+    orderNumber: number | undefined;
+    questionDescription: string | undefined;
+    correctAnswerDescription: string | undefined;
+    isMultiAnswer: boolean | undefined;
+    answers: AnswerModel[] | undefined;
+    inputType: string | undefined;
+
+    constructor(data?: IQuestionModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.imageBase64 = data["imageBase64"];
+            this.orderNumber = data["orderNumber"];
+            this.questionDescription = data["questionDescription"];
+            this.correctAnswerDescription = data["correctAnswerDescription"];
+            this.isMultiAnswer = data["isMultiAnswer"];
+            if (Array.isArray(data["answers"])) {
+                this.answers = [] as any;
+                for (let item of data["answers"])
+                    this.answers.push(AnswerModel.fromJS(item));
+            }
+            this.inputType = data["inputType"];
+        }
+    }
+
+    static fromJS(data: any): QuestionModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new QuestionModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["imageBase64"] = this.imageBase64;
+        data["orderNumber"] = this.orderNumber;
+        data["questionDescription"] = this.questionDescription;
+        data["correctAnswerDescription"] = this.correctAnswerDescription;
+        data["isMultiAnswer"] = this.isMultiAnswer;
+        if (Array.isArray(this.answers)) {
+            data["answers"] = [];
+            for (let item of this.answers)
+                data["answers"].push(item.toJSON());
+        }
+        data["inputType"] = this.inputType;
+        return data; 
+    }
+
+    clone(): QuestionModel {
+        const json = this.toJSON();
+        let result = new QuestionModel();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IQuestionModel {
+    id: number | undefined;
+    imageBase64: string | undefined;
+    orderNumber: number | undefined;
+    questionDescription: string | undefined;
+    correctAnswerDescription: string | undefined;
+    isMultiAnswer: boolean | undefined;
+    answers: AnswerModel[] | undefined;
+    inputType: string | undefined;
+}
+
+export class AnswerModel implements IAnswerModel {
+    selected: boolean | undefined;
+    isCorrect: boolean | undefined;
+    answerText: string | undefined;
+
+    constructor(data?: IAnswerModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.selected = data["selected"];
+            this.isCorrect = data["isCorrect"];
+            this.answerText = data["answerText"];
+        }
+    }
+
+    static fromJS(data: any): AnswerModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new AnswerModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["selected"] = this.selected;
+        data["isCorrect"] = this.isCorrect;
+        data["answerText"] = this.answerText;
+        return data; 
+    }
+
+    clone(): AnswerModel {
+        const json = this.toJSON();
+        let result = new AnswerModel();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IAnswerModel {
+    selected: boolean | undefined;
+    isCorrect: boolean | undefined;
+    answerText: string | undefined;
+}
+
+export class QuestionDto implements IQuestionDto {
+    id: number | undefined;
+    orderNumber: number | undefined;
+    isMultiAnswer: boolean | undefined;
+    answerCount: number | undefined;
+    mainSubjectName: string | undefined;
+    creationTime: moment.Moment | undefined;
+
+    constructor(data?: IQuestionDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.orderNumber = data["orderNumber"];
+            this.isMultiAnswer = data["isMultiAnswer"];
+            this.answerCount = data["answerCount"];
+            this.mainSubjectName = data["mainSubjectName"];
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): QuestionDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new QuestionDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["orderNumber"] = this.orderNumber;
+        data["isMultiAnswer"] = this.isMultiAnswer;
+        data["answerCount"] = this.answerCount;
+        data["mainSubjectName"] = this.mainSubjectName;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        return data; 
+    }
+
+    clone(): QuestionDto {
+        const json = this.toJSON();
+        let result = new QuestionDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IQuestionDto {
+    id: number | undefined;
+    orderNumber: number | undefined;
+    isMultiAnswer: boolean | undefined;
+    answerCount: number | undefined;
+    mainSubjectName: string | undefined;
+    creationTime: moment.Moment | undefined;
+}
+
+export class CreateEditQuestionDto implements ICreateEditQuestionDto {
+    id: number | undefined;
+    imageBase64: string | undefined;
+    orderNumber: number | undefined;
+    questionDescription: string | undefined;
+    correctAnswerDescription: string | undefined;
+    mainSubjectId: number | undefined;
+    isMultiAnswer: boolean | undefined;
+    answers: AnswerDto[] | undefined;
+    deletedAnswerIds: number[] | undefined;
+    creationTime: moment.Moment | undefined;
+
+    constructor(data?: ICreateEditQuestionDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.imageBase64 = data["imageBase64"];
+            this.orderNumber = data["orderNumber"];
+            this.questionDescription = data["questionDescription"];
+            this.correctAnswerDescription = data["correctAnswerDescription"];
+            this.mainSubjectId = data["mainSubjectId"];
+            this.isMultiAnswer = data["isMultiAnswer"];
+            if (Array.isArray(data["answers"])) {
+                this.answers = [] as any;
+                for (let item of data["answers"])
+                    this.answers.push(AnswerDto.fromJS(item));
+            }
+            if (Array.isArray(data["deletedAnswerIds"])) {
+                this.deletedAnswerIds = [] as any;
+                for (let item of data["deletedAnswerIds"])
+                    this.deletedAnswerIds.push(item);
+            }
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): CreateEditQuestionDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateEditQuestionDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["imageBase64"] = this.imageBase64;
+        data["orderNumber"] = this.orderNumber;
+        data["questionDescription"] = this.questionDescription;
+        data["correctAnswerDescription"] = this.correctAnswerDescription;
+        data["mainSubjectId"] = this.mainSubjectId;
+        data["isMultiAnswer"] = this.isMultiAnswer;
+        if (Array.isArray(this.answers)) {
+            data["answers"] = [];
+            for (let item of this.answers)
+                data["answers"].push(item.toJSON());
+        }
+        if (Array.isArray(this.deletedAnswerIds)) {
+            data["deletedAnswerIds"] = [];
+            for (let item of this.deletedAnswerIds)
+                data["deletedAnswerIds"].push(item);
+        }
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        return data; 
+    }
+
+    clone(): CreateEditQuestionDto {
+        const json = this.toJSON();
+        let result = new CreateEditQuestionDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ICreateEditQuestionDto {
+    id: number | undefined;
+    imageBase64: string | undefined;
+    orderNumber: number | undefined;
+    questionDescription: string | undefined;
+    correctAnswerDescription: string | undefined;
+    mainSubjectId: number | undefined;
+    isMultiAnswer: boolean | undefined;
+    answers: AnswerDto[] | undefined;
+    deletedAnswerIds: number[] | undefined;
+    creationTime: moment.Moment | undefined;
+}
+
+export class AnswerDto implements IAnswerDto {
+    id: number | undefined;
+    isCorrect: boolean | undefined;
+    answerText: string | undefined;
+    questionId: number | undefined;
+
+    constructor(data?: IAnswerDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.isCorrect = data["isCorrect"];
+            this.answerText = data["answerText"];
+            this.questionId = data["questionId"];
+        }
+    }
+
+    static fromJS(data: any): AnswerDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AnswerDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["isCorrect"] = this.isCorrect;
+        data["answerText"] = this.answerText;
+        data["questionId"] = this.questionId;
+        return data; 
+    }
+
+    clone(): AnswerDto {
+        const json = this.toJSON();
+        let result = new AnswerDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IAnswerDto {
+    id: number | undefined;
+    isCorrect: boolean | undefined;
+    answerText: string | undefined;
+    questionId: number | undefined;
 }
 
 export class CreateRoleDto implements ICreateRoleDto {
