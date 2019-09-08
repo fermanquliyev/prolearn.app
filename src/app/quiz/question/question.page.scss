@@ -2,6 +2,16 @@
 .text-alert {
   color: red;
 }
+::ng-deep .width100 .alert-wrapper{
+  transform: scale(1.4) !important;
+}
+::ng-deep .width100 .alert-message {
+  font-size: 12px !important;
+}
+::ng-deep .width100 .alert-title {
+  font-size: 17px;
+  text-align: center !important;
+}
 pre {
   display: inline-block;
   max-width: 100%;

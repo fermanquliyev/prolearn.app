@@ -4,6 +4,9 @@
       <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title >Sual {{index+1}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear">{{time.minutes()+':'+time.seconds()}}</ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -20,9 +23,9 @@
         </ion-card-header>
         <div>
           <ion-list>
-            <ion-radio-group (ionChange)="radioChange($event)" [name]="index" *ngIf="!currentQuestion.isMultiAnswer; else checkBox">
+            <ion-radio-group #ionRadioGroup (ionChange)="radioChange($event)" [name]="index" *ngIf="!currentQuestion.isMultiAnswer; else checkBox">
               <ion-item style="margin-bottom: 5px;" lines="none" *ngFor="let ans of currentQuestion.answers; let i = index;">
-                <ion-radio color="secondary" [checked]="ans.selected" slot="start" [value]="i" [name]="index"></ion-radio>
+                <ion-radio color="secondary" [checked]="ans.selected" slot="start" [value]="i" [name]="i"></ion-radio>
                 <ion-text style="word-break: break-word;">{{ans.answerText}}</ion-text>
               </ion-item>
             </ion-radio-group>
@@ -45,14 +48,16 @@
               <ion-icon slot="icon-only" name="arrow-dropleft-circle"></ion-icon>
           </ion-button>
         </div>
-        <div class="btn-group" role="group" style="text-align: center;">
-          <ion-button color="light" (click)="checkAnswer()">Cavab</ion-button>
-        </div>
         <div class="btn-group" role="group" style="text-align: left;">
             <ion-button [disabled]="index+1==questions.length" color="light" (click)="nextQuestion()">
                 <ion-icon slot="icon-only" name="arrow-dropright-circle"></ion-icon>
             </ion-button>
           </div>
+      </div>
+      <div class="btn-group btn-group-justified">
+        <div class="btn-group" role="group" style="text-align: center;">
+          <ion-button color="light" style="width: 50%;" (click)="checkAnswer()">TESTİ TAMAMLA</ion-button>
+        </div>
       </div>
     </div>
     
